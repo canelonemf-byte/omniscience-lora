@@ -1,0 +1,21 @@
+name: ci
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  py_compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compilar módulos Python
+        run: |
+          set -e
+          mapfile -t files < <(find . -name "*.py" -not -path "./.git/*" -not -path "./.venv/*")
+          python -m py_compile "${files[@]}"
+          echo "py_compile OK (${#files[@]} archivos)"
+
